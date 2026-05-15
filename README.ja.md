@@ -1,26 +1,27 @@
 # ai-sensitive-files
 
-`ai-sensitive-files` は、リポジトリ内の機密ファイルの場所を
-管理する、
-小さなセキュリティ向け開発ツールです。
+`ai-sensitive-files` は、`.env` や `.aws/credentials` などの
+機密ファイルの扱いを 1 つの YAML にまとめるツールです。
 
-ポートフォリオとして扱うのは、
-実務で起きやすい小さな運用上の問題です。
-`.env`、`.aws/credentials`、ローカルのエンティティ辞書、
-パスワードマネージャーから書き出した平文ファイルなどは、
-認証情報や社内固有情報を含むことがあります。
-これらのファイルが AI の読み取り対象や Git 履歴に入ると、
-情報漏えい、レビュー漏れ、
-復旧しづらい履歴汚染につながります。
+うれしい点は、AI に見せない場所、Git に載せない場所、
+暗号化する場所、コミット時に止める場所を
+別々に管理しなくてよくなることです。
 
-ただし実際の現場では、その扱いが分散しがちです。
-たとえば ignore ファイル、暗号化コマンド、フックです。
+たとえば `.env` を追加したときに、
+`.aiignore`、`.gitignore`、SOPS/age の対象、
+Lefthook のチェックをそれぞれ手で直す必要がありません。
+`.ai-sensitive-files/sensitive-files.yaml` を直して生成し直せば、
+同じ判断基準から必要なファイルを作れます。
 
-このリポジトリでは、それらのルールを
-`.ai-sensitive-files/sensitive-files.yaml` に集約します。
-同じ定義から AI/editor 向け ignore、
-gitignore 候補、暗号化計画、
-コミット前チェックを生成します。
+その結果、次のような状態を減らせます。
+
+- AI ignore には入っているが `.gitignore` にはない
+- 暗号化対象なのに平文ファイルだけ更新されている
+- パスワードマネージャーから出した平文ファイルが残っている
+- 生成済みファイルがポリシーより古い
+
+このリポジトリは、その小さな運用問題を扱う
+ポートフォリオ用のセキュリティ向け開発ツールです。
 
 このプロジェクトで示していること:
 
@@ -41,23 +42,24 @@ English: [README.md](README.md)
 
 `.ai-sensitive-files/sensitive-files.yaml` から以下を生成します。
 
-- `.aiignore`, `.cursorignore`, `.copilotignore`:
+- [`.aiignore`](.aiignore), [`.cursorignore`](.cursorignore),
+  [`.copilotignore`](.copilotignore):
   AI/editor 向け ignore の意図表明
-- `.gitignore.ai-sensitive-files`:
+- [`.gitignore.ai-sensitive-files`](.gitignore.ai-sensitive-files):
   `.gitignore` に追記する候補
-- `generated/claude-code-deny-read.json`:
+- [`generated/claude-code-deny-read.json`](generated/claude-code-deny-read.json):
   Claude Code の `denyRead` スニペット
-- `generated/ai-agent-guidance.md`:
+- [`generated/ai-agent-guidance.md`](generated/ai-agent-guidance.md):
   Codex / Cursor / Copilot 向けの案内スニペット
-- `generated/ai-sensitive-files.summary.md`:
+- [`generated/ai-sensitive-files.summary.md`](generated/ai-sensitive-files.summary.md):
   ポリシーの要約
-- `generated/encryption-targets.txt`:
+- [`generated/encryption-targets.txt`](generated/encryption-targets.txt):
   SOPS/age の暗号化対象
-- `generated/decryption-targets.txt`:
+- [`generated/decryption-targets.txt`](generated/decryption-targets.txt):
   暗号化済みの場所と復号後の場所の対応表
-- `generated/secret-sources.txt`:
+- [`generated/secret-sources.txt`](generated/secret-sources.txt):
   1Password / Bitwarden から平文ファイルを作るための参照
-- `generated/crypto-plan.md`:
+- [`generated/crypto-plan.md`](generated/crypto-plan.md):
   暗号化/復号コマンドと手動編集ポリシー
 
 既存の `.gitignore` は直接変更しません。

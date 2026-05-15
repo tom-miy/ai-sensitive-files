@@ -5,11 +5,11 @@ It is not a universal enforcement layer.
 
 Generated files:
 
-- `.aiignore`
-- `.cursorignore`
-- `.copilotignore`
-- `generated/claude-code-deny-read.json`
-- `generated/ai-agent-guidance.md`
+- [`.aiignore`](../.aiignore)
+- [`.cursorignore`](../.cursorignore)
+- [`.copilotignore`](../.copilotignore)
+- [`generated/claude-code-deny-read.json`](../generated/claude-code-deny-read.json)
+- [`generated/ai-agent-guidance.md`](../generated/ai-agent-guidance.md)
 
 Different agents and editors support different settings.
 Use generated ignore files together with commit checks,

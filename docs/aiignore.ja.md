@@ -5,11 +5,11 @@
 
 生成されるファイル:
 
-- `.aiignore`
-- `.cursorignore`
-- `.copilotignore`
-- `generated/claude-code-deny-read.json`
-- `generated/ai-agent-guidance.md`
+- [`.aiignore`](../.aiignore)
+- [`.cursorignore`](../.cursorignore)
+- [`.copilotignore`](../.copilotignore)
+- [`generated/claude-code-deny-read.json`](../generated/claude-code-deny-read.json)
+- [`generated/ai-agent-guidance.md`](../generated/ai-agent-guidance.md)
 
 エージェントやエディタごとに対応状況は異なります。
 ignore ファイルだけに依存せず、

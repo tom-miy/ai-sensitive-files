@@ -1,23 +1,27 @@
 # ai-sensitive-files
 
-`ai-sensitive-files` is a small security-focused developer tool
-for managing sensitive file paths in a repository.
+`ai-sensitive-files` keeps sensitive file handling in one YAML policy.
+It is meant for paths such as `.env`, `.aws/credentials`,
+local entity dictionaries, and decrypted password-manager exports.
 
-As a portfolio project, it focuses on a small operational problem
-that appears in real projects.
-Files such as `.env`, `.aws/credentials`, local entity dictionaries,
-and decrypted password-manager exports can contain credentials
-or organization-specific information.
-If those files enter AI context or git history,
-the result can be data exposure, missed review,
-and hard-to-clean repository history.
+The benefit is that AI ignore rules, gitignore entries,
+encryption targets, and commit-block checks do not drift apart.
 
-In practice, the rules for those files are often scattered
-across ignore files, encryption commands, and hooks.
+For example, when `.env` becomes sensitive,
+you should not need to update `.aiignore`, `.gitignore`,
+SOPS/age targets, and Lefthook checks by hand.
+Update `.ai-sensitive-files/sensitive-files.yaml`,
+then regenerate the derived files from the same decision.
 
-This repo puts those rules in `.ai-sensitive-files/sensitive-files.yaml`.
-It then generates AI/editor ignore files, gitignore entries,
-crypto plans, and commit checks from the same source.
+This reduces states like:
+
+- a path is ignored by AI tooling but missing from `.gitignore`
+- plaintext changed but the encrypted artifact did not
+- plaintext exported from a password manager is still present
+- generated files are older than the policy
+
+This repository turns that small operational problem
+into a portfolio-ready security developer tool.
 
 What this demonstrates:
 
@@ -37,22 +41,24 @@ What this demonstrates:
 
 From `.ai-sensitive-files/sensitive-files.yaml`, the CLI writes:
 
-- `.aiignore`, `.cursorignore`, `.copilotignore`:
+- [`.aiignore`](.aiignore), [`.cursorignore`](.cursorignore),
+  [`.copilotignore`](.copilotignore):
   common AI/editor ignore intent
-- `.gitignore.ai-sensitive-files`:
+- [`.gitignore.ai-sensitive-files`](.gitignore.ai-sensitive-files):
   entries to review and merge into `.gitignore`
-- `generated/claude-code-deny-read.json`:
+- [`generated/claude-code-deny-read.json`](generated/claude-code-deny-read.json):
   Claude Code `denyRead` snippet
-- `generated/ai-agent-guidance.md`:
+- [`generated/ai-agent-guidance.md`](generated/ai-agent-guidance.md):
   Codex / Cursor / Copilot guidance snippet
-- `generated/ai-sensitive-files.summary.md`:
+- [`generated/ai-sensitive-files.summary.md`](generated/ai-sensitive-files.summary.md):
   human-readable policy summary
-- `generated/encryption-targets.txt`: SOPS/age target list
-- `generated/decryption-targets.txt`:
+- [`generated/encryption-targets.txt`](generated/encryption-targets.txt):
+  SOPS/age target list
+- [`generated/decryption-targets.txt`](generated/decryption-targets.txt):
   encrypted-to-decrypted path mapping
-- `generated/secret-sources.txt`:
+- [`generated/secret-sources.txt`](generated/secret-sources.txt):
   1Password / Bitwarden references used to create local plaintext files
-- `generated/crypto-plan.md`:
+- [`generated/crypto-plan.md`](generated/crypto-plan.md):
   configured encrypt/decrypt commands and manual-edit policy
 
 Existing `.gitignore` is never edited directly.
