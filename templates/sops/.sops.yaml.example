@@ -1,0 +1,8 @@
+# Example only. Replace dummy recipients with your team's age public keys.
+# age public recipients may be committed. Do not commit age private keys or identities.
+creation_rules:
+  - path_regex: '(^\.env\.sops\.yaml$|^secrets/.*\.sops\.yaml$|^\.agent-privacy-guard/entities\.local\.sops\.yaml$)'
+    # Multiple recipients allow team members and CI to decrypt the same files.
+    age: >-
+      age1exampleteampublickey00000000000000000000000000000000000,
+      age1examplecipublickey000000000000000000000000000000000000

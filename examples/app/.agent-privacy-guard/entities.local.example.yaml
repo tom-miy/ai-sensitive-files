@@ -1,0 +1,3 @@
+entities:
+  - name: "Example Private Customer"
+    replacement: "Customer A"

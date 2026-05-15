@@ -1,0 +1,28 @@
+[tools]
+go = "1.26.3"
+sops = "latest"
+age = "latest"
+lefthook = "latest"
+
+[env]
+_.path = [".bin"]
+
+[tasks.test]
+description = "Run Go tests"
+run = "go test ./..."
+
+[tasks.validate-example]
+description = "Validate the example sensitive file policy"
+run = "go run ./cmd/ai-sensitive-files validate --config templates/sensitive-files.example.yaml"
+
+[tasks.install-cli]
+description = "Build the ai-sensitive-files CLI into .bin"
+run = "go build -o .bin/ai-sensitive-files ./cmd/ai-sensitive-files"
+
+[tasks.demo]
+description = "Run the end-to-end demo"
+run = "bash scripts/demo.sh"
+
+[tasks.verify]
+description = "Run the portfolio verification flow"
+depends = ["test", "validate-example", "demo"]

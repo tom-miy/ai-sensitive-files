@@ -1,0 +1,95 @@
+# Policy source of truth for sensitive file paths in an application repo.
+# Copy this to .ai-sensitive-files/sensitive-files.yaml.
+# path: plaintext path to hide/check.
+# encrypted_path: encrypted artifact path.
+# decrypted_path: local plaintext output path after decryption.
+sensitive_files:
+  - path: ".env"
+    encrypted_path: ".env.sops.yaml"
+    decrypted_path: ".env"
+    reason: "local environment secrets"
+    tags: ["env", "secret"]
+    crypto:
+      method: "sops-age"
+      recipients: ["age1exampleteampublickey00000000000000000000000000000000000", "age1examplecipublickey000000000000000000000000000000000000"]
+      encrypt_command: "sops --encrypt --output {encrypted_path} {decrypted_path}"
+      decrypt_command: "sops --decrypt --output {decrypted_path} {encrypted_path}"
+      manual_edit: "decrypted"
+    action:
+      aiignore: true
+      gitignore: true
+      encrypt: true
+      commit_block: true
+
+  - path: ".agent-privacy-guard/entities.local.yaml"
+    encrypted_path: ".agent-privacy-guard/entities.local.sops.yaml"
+    decrypted_path: ".agent-privacy-guard/entities.local.yaml"
+    reason: "private entity dictionary for prompt sanitization"
+    tags: ["ai", "entity", "confidential"]
+    crypto:
+      method: "sops-age"
+      recipients: ["age1exampleteampublickey00000000000000000000000000000000000", "age1examplecipublickey000000000000000000000000000000000000"]
+      encrypt_command: "sops --encrypt --output {encrypted_path} {decrypted_path}"
+      decrypt_command: "sops --decrypt --output {decrypted_path} {encrypted_path}"
+      manual_edit: "none"
+    action:
+      aiignore: true
+      gitignore: true
+      encrypt: true
+      commit_block: true
+
+  - path: ".aws/credentials"
+    reason: "cloud credentials"
+    tags: ["cloud", "credential"]
+    action:
+      aiignore: true
+      gitignore: false
+      encrypt: false
+      commit_block: true
+
+  - path: ".env.ci"
+    decrypted_path: ".env.ci"
+    reason: "CI-only environment secrets fetched from 1Password"
+    tags: ["env", "secret", "1password"]
+    crypto:
+      method: "1password"
+      secret_ref: "op://Engineering/App CI/.env"
+      decrypt_command: "op read {secret_ref} > {decrypted_path}"
+      manual_edit: "none"
+    action:
+      aiignore: true
+      gitignore: true
+      encrypt: true
+      commit_block: true
+
+  - path: ".env.shared"
+    decrypted_path: ".env.shared"
+    reason: "shared development secrets fetched from Bitwarden"
+    tags: ["env", "secret", "bitwarden"]
+    crypto:
+      method: "bitwarden"
+      secret_ref: "bw://item/app-shared-env/notes"
+      decrypt_command: "bw get notes app-shared-env > {decrypted_path}"
+      manual_edit: "none"
+    action:
+      aiignore: true
+      gitignore: true
+      encrypt: true
+      commit_block: true
+
+  - path: "secrets/**"
+    encrypted_path: "secrets/**/*.sops.yaml"
+    decrypted_path: "secrets/**"
+    reason: "local secret directory"
+    tags: ["secret"]
+    crypto:
+      method: "sops-age"
+      recipients: ["age1exampleteampublickey00000000000000000000000000000000000", "age1examplecipublickey000000000000000000000000000000000000"]
+      encrypt_command: "sops --encrypt --output {encrypted_path} {decrypted_path}"
+      decrypt_command: "sops --decrypt --output {decrypted_path} {encrypted_path}"
+      manual_edit: "none"
+    action:
+      aiignore: true
+      gitignore: true
+      encrypt: true
+      commit_block: true

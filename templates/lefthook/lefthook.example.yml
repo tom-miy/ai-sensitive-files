@@ -1,0 +1,4 @@
+pre-commit:
+  commands:
+    ai-sensitive-files:
+      run: ai-sensitive-files check --config .ai-sensitive-files/sensitive-files.yaml
