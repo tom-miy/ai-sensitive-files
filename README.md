@@ -37,6 +37,39 @@ What this demonstrates:
 
 日本語版: [README.ja.md](README.ja.md)
 
+## Why This Helps
+
+- You review one YAML policy instead of comparing several ignore,
+  hook, and encryption files by hand.
+- AI tooling, Git ignore rules, encryption targets,
+  and commit checks are generated from the same decision.
+- A reviewer can ask "why is this path sensitive?"
+  and find the answer next to the path in the policy.
+- The installer does not silently edit `.gitignore`, SOPS,
+  or Lefthook config, so adoption stays reviewable.
+- `check` turns drift into a visible local or pre-commit failure
+  before plaintext files reach a commit.
+
+## What To Do And What Changes
+
+- Add or edit a path in `.ai-sensitive-files/sensitive-files.yaml`.
+  That becomes the source decision for AI ignore, gitignore,
+  encryption, and commit-block behavior.
+- Run `ai-sensitive-files validate`.
+  Syntax errors, missing reasons, missing actions,
+  and invalid wildcard patterns are reported before generation.
+- Run `ai-sensitive-files generate --out .`.
+  `.aiignore`, `.cursorignore`, `.copilotignore`,
+  `.gitignore.ai-sensitive-files`, Claude Code `denyRead`,
+  AI guidance, and crypto target files are regenerated.
+- Review `.gitignore.ai-sensitive-files`.
+  You decide which entries to merge into `.gitignore`;
+  this tool does not mutate `.gitignore` for you.
+- Run `ai-sensitive-files check` locally or from Lefthook.
+  Tracked commit-block paths, plaintext drift,
+  missing `.gitignore` entries, and stale generated files
+  become blocking errors.
+
 ## What It Generates
 
 From `.ai-sensitive-files/sensitive-files.yaml`, the CLI writes:
@@ -60,6 +93,9 @@ From `.ai-sensitive-files/sensitive-files.yaml`, the CLI writes:
   1Password / Bitwarden references used to create local plaintext files
 - [`generated/crypto-plan.md`](generated/crypto-plan.md):
   configured encrypt/decrypt commands and manual-edit policy
+
+File formats and usage are described in
+[docs/generated-files.md](docs/generated-files.md).
 
 Existing `.gitignore` is never edited directly.
 `check` verifies that entries generated in `.gitignore.ai-sensitive-files`

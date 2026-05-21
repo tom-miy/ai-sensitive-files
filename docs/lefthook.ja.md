@@ -1,6 +1,8 @@
 # Lefthook
 
-Lefthook ではコミット前のゲートとして使います。
+Lefthook ではコミット前の検査として使います。
+目的は、ポリシーで止めると決めた平文ファイルや
+古い生成物をコミット前に見つけることです。
 
 ```yaml
 pre-commit:
@@ -20,3 +22,9 @@ pre-commit:
 インストーラーは既存の Lefthook 設定を編集しません。
 `templates/lefthook/lefthook.example.yml` を確認して、
 手動で取り込んでください。
+
+導入後に期待する状態:
+
+- `git commit` 前に `ai-sensitive-files check` が実行される
+- 平文の `.env` などが Git 管理されていればコミットが止まる
+- ポリシー変更後に生成物を更新していなければコミットが止まる
